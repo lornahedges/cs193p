@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
+    var emojis: [String] = ["🎃", "😈", "🧙🏼‍♀️", "🕷️", "🕷️"]
+    
     var body: some View {
         HStack {
-            CardView(isFaceUp: true)
-            CardView()
-            CardView()
-            CardView()
+            ForEach(emojis.indices, id: \.self)
+            {
+                index in CardView(content: emojis[index])
+            }
         }
         .foregroundColor(.blue)
         .padding()
@@ -21,20 +23,21 @@ struct ContentView: View {
 }
 
 struct CardView: View {
-    var isFaceUp: Bool = false
-    
+    @State var isFaceUp: Bool = false
+    let base = RoundedRectangle(cornerRadius: 12)
+    let content: String
     
     var body: some View {
         ZStack {
             if isFaceUp {
-                RoundedRectangle(cornerRadius: 12)
-                    .foregroundColor(.white)
-                RoundedRectangle(cornerRadius: 12)
-                    .strokeBorder(lineWidth: 2)
-                Text("👻").font(.largeTitle)
+                base.foregroundColor(.white)
+                base.strokeBorder(lineWidth: 2)
+                Text(content).font(.largeTitle)
             }else{
-                RoundedRectangle(cornerRadius: 12)
-            }
+                base
+                }
+            }.onTapGesture() {
+                isFaceUp.toggle() //add @State to isFaceUp declaration to allow (the wrong way) the cards to be toggled even though a view is immutable.
         }
     }
 }
